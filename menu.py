@@ -1,5 +1,4 @@
 import pygame
-import game_main as gm
 
 
 class Menu:
@@ -87,7 +86,8 @@ class MainMenu(Menu):
         self.move_cursor()
         if self.game.START_KEY:
             if self.state == 'Start':
-                pass
+                self.run_display = False
+                self.game.game_loop()
             elif self.state == 'Options':
                 self.game.curr_menu = self.game.options
             elif self.state == 'Credits':
