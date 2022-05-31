@@ -2,14 +2,15 @@ import pygame
 from pygame import *
 import sys
 
-BLACK = game.BLACK
-BLUE = game.BLUE
+pygame.init()
+BLACK = (0, 0, 0)
+BLUE = (0, 100, 255)
 # Set screen parameters
-width = game.DISPLAY_W
-height = game.DISPLAY_H
+width = pygame.display.get_desktop_sizes()[0][0]
+height = pygame.display.get_desktop_sizes()[0][1]
 dead = False
-half_width = int(width / 2)
-half_height = int(height / 2)
+half_width = width / 2
+half_height = height / 2
 
 DISPLAY = (width, height)
 
@@ -19,7 +20,7 @@ bg_stretched = pygame.transform.scale(bg, (width, height))
 def main():
     global cameraX, cameraY, screen, dead
     timer = pygame.time.Clock()
-    screen = pygame.display.set_mode(DISPLAY)
+    screen = pygame.display.set_mode(DISPLAY, pygame.FULLSCREEN)
     pygame.display.set_caption("Sanic!")
     up = down = left = right = running = False
     entities = pygame.sprite.Group()
@@ -57,7 +58,7 @@ def main():
         "PPPPPPPPPPPPPPPPPPG          GPPPPPPPPPPPPPPPPPPPG           P   P   P    PPPPPPPPPPPP",
         "PPPPPPPPPPPPPPPPPPPG       GGPPPPPPPPPPPPPPPPPPPPPG          P   P   P    PPPPPPPPPPPP",
         "PPPPPPPPPPPPPPPPPPPPGGGGGGGPPPPPPPPPPPPPPPPPPPPPPPPGGGSSSSGGGPSSSPSSSPSSSSPPPPPPPPPPPP",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPP PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
@@ -158,14 +159,18 @@ def start():
                 pygame.quit()
                 sys.exit()
             screen.fill(BLUE)
-            bg2 = pygame.image.load("bg1.jpg")
-            bg2_stretched = pygame.transform.scale(bg2, (800, 640))
+            bg2 = pygame.image.load("bg.png")
+            bg2_stretched = pygame.transform.scale(bg2, (width, height))
             screen.blit(bg2_stretched, (0, 0))
             myfont = pygame.font.SysFont("comicsans", 48)
             sonic = myfont.render("SONIC", True, (0,0,0))
-            screen.blit(sonic, (350, 175))
+            sonic_rect = sonic.get_rect()
+            sonic_rect.center = (half_width, half_height - 50)
+            screen.blit(sonic, sonic_rect)
             start = myfont.render("Press SPACE to play.", True, (0,0,0))
-            screen.blit(start, (245, 215))
+            start_rect = start.get_rect()
+            start_rect.center = (half_width, half_height)
+            screen.blit(start, start_rect)
             pygame.display.update()
 
 def end():
@@ -179,14 +184,18 @@ def end():
                 pygame.quit()
                 sys.exit()
             screen.fill(BLUE)
-            bg2 = pygame.image.load("bg1.jpg")
-            bg2_stretched = pygame.transform.scale(bg2, (800, 640))
+            bg2 = pygame.image.load("bg.png")
+            bg2_stretched = pygame.transform.scale(bg2, (width, height))
             screen.blit(bg2_stretched, (0, 0))
             myfont = pygame.font.SysFont("comicsans", 48)
-            sonic = myfont.render("YOU WON!", 1, (0,0,0))
-            screen.blit(sonic, (350, 175))
-            start = myfont.render("Press ESCAPE to quit.", 1, (0,0,0))
-            screen.blit(start, (245, 215))
+            sonic = myfont.render("YOU WON!", True, (0,0,0))
+            sonic_rect = sonic.get_rect()
+            sonic_rect.center = (half_width, half_height - 50)
+            screen.blit(sonic, sonic_rect)
+            start = myfont.render("Press ESCAPE to quit.", True, (0,0,0))
+            start_rect = start.get_rect()
+            start_rect.center = (half_width, half_height)
+            screen.blit(start, start_rect)
             pygame.display.update()
 
 #This is the class that controls where the scrolling stops for the player
@@ -262,7 +271,7 @@ class Player(Entity):
         # increment in y direction
         self.rect.top += self.yvel
         # assuming we're in the air
-        self.onGround = False;
+        self.onGround = False
         # do y-axis collisions
         self.collide(0, self.yvel, platforms)
 

@@ -1,6 +1,8 @@
 import sys
 import pygame
 
+from sonic import *
+
 class Menu:
     def __init__(self, game):
         self.game = game
