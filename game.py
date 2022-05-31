@@ -18,7 +18,7 @@ class Game:
         pygame.display.set_caption("Troller's Paradise")
         self.clock = pygame.time.Clock()
         self.font_name = 'UI/8-Bit.ttf'
-        self.BLACK, self.WHITE, self.GREEN, self.RED = (0, 0, 0), (255, 255, 255), (0, 255, 0), (255, 0, 0)
+        self.BLACK, self.WHITE, self.GREEN, self.RED, self.BLUE = (0, 0, 0), (255, 255, 255), (0, 255, 0), (255, 0, 0), (0, 100, 255)
         self.main_menu = MainMenu(self)
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)

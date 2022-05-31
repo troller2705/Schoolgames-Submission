@@ -1,13 +1,12 @@
-
 import pygame
 from pygame import *
 import sys
 
-BLACK = (0, 0, 0)
-BLUE = (0, 100, 255)
+BLACK = game.BLACK
+BLUE = game.BLUE
 # Set screen parameters
-width = 800
-height = 640
+width = game.DISPLAY_W
+height = game.DISPLAY_H
 dead = False
 half_width = int(width / 2)
 half_height = int(height / 2)
@@ -15,7 +14,7 @@ half_height = int(height / 2)
 DISPLAY = (width, height)
 
 bg = pygame.image.load("bg.png")
-bg_stretched = pygame.transform.scale(bg, (800, 640))
+bg_stretched = pygame.transform.scale(bg, (width, height))
 # Main def
 def main():
     global cameraX, cameraY, screen, dead
@@ -163,9 +162,9 @@ def start():
             bg2_stretched = pygame.transform.scale(bg2, (800, 640))
             screen.blit(bg2_stretched, (0, 0))
             myfont = pygame.font.SysFont("comicsans", 48)
-            sonic = myfont.render("SONIC", 1, (0,0,0))
+            sonic = myfont.render("SONIC", True, (0,0,0))
             screen.blit(sonic, (350, 175))
-            start = myfont.render("Press SPACE to play.", 1, (0,0,0))
+            start = myfont.render("Press SPACE to play.", True, (0,0,0))
             screen.blit(start, (245, 215))
             pygame.display.update()
 
