@@ -22,7 +22,6 @@ class Game:
         self.main_menu = MainMenu(self)
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)
-        self.game_menu = GameMenu(self)
         self.volume_menu = VolumeMenu(self)
         self.controls_menu = ControlsMenu(self)
         self.curr_menu = self.main_menu

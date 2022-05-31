@@ -1,14 +1,5 @@
-import time
-
 import pygame
-import sys
-
-sys.path.append('./Games/P')
-sys.path.append('./Games/SA')
-sys.path.append('./Games/AQ')
-import platformer
-import shark_attack
-import ancient_quest
+import game_main as gm
 
 
 class Menu:
@@ -37,14 +28,6 @@ class Menu:
         # pygame.draw.polygon(self.game.display, self.game.RED,
         #   [[self.mid_w, self.mid_h], [340, 345], [400, 390], [460, 345]], 0)
 
-    def draw_characters(self):
-        sharkS = pygame.image.load('Games/SA/Characters/Shark.R.png')
-        platformerS = pygame.image.load('Games/P/Characters/Platformer.png')
-        adventurerS = pygame.image.load('Games/AQ/Characters/Adventurer.png')
-        self.game.display.blit(sharkS, (self.mid_w / 6, self.mid_h - 50))
-        self.game.display.blit(platformerS, (self.mid_w - 85, self.mid_h - 230))
-        self.game.display.blit(adventurerS, (self.mid_w + 200, self.mid_h - 50))
-
 
 class MainMenu(Menu):
     def __init__(self, game):
@@ -70,7 +53,6 @@ class MainMenu(Menu):
             self.game.draw_text('Exit', 20, self.exitx, self.exity)
             self.draw_cross()
             self.draw_cursor()
-            self.draw_characters()
             self.blit_screen()
 
     def move_cursor(self):
@@ -105,7 +87,7 @@ class MainMenu(Menu):
         self.move_cursor()
         if self.game.START_KEY:
             if self.state == 'Start':
-                self.game.curr_menu = self.game.game_menu
+                pass
             elif self.state == 'Options':
                 self.game.curr_menu = self.game.options
             elif self.state == 'Credits':
@@ -266,89 +248,6 @@ class CreditsMenu(Menu):
             self.game.draw_text('Troller AKA Cole', 25, self.mid_w, self.mid_h + 50)
 
             self.blit_screen()
-
-
-class GameMenu(Menu):
-    def __init__(self, game):
-        Menu.__init__(self, game)
-        self.playing = False
-        self.state = 'Ancient Quest'
-        self.g1x, self.g1y = self.mid_w, self.mid_h + 225
-        self.g2x, self.g2y = self.mid_w, self.mid_h + 250
-        self.g3x, self.g3y = self.mid_w, self.mid_h + 275
-        self.cursor_rect.midtop = (self.g1x + -135, self.g1y)
-
-        self.size = [300, 200]
-        self.rect_x = self.mid_w - (self.size[0] / 2)
-        self.rect_y = self.mid_h - (self.size[1] / 2)
-        self.rect = [self.rect_x, self.rect_y, self.size[0], self.size[1]]
-
-    def display_menu(self):
-        self.run_display = True
-        while self.run_display:
-            self.game.check_events()
-            self.game.display.fill((0, 0, 0))
-            self.game.draw_text('Game Selections', 30, self.mid_w, self.mid_h - 250)
-            self.game.draw_text('Ancient Quest', 20, self.g1x, self.g1y)
-            self.game.draw_text('Platformer', 20, self.g2x, self.g2y)
-            self.game.draw_text('Shark Attack', 20, self.g3x, self.g3y)
-            self.draw_cross()
-            self.draw_cursor()
-            self.draw_characters()
-            self.check_input()
-            self.blit_screen()
-
-    def move_cursor(self):
-        if self.game.DOWN_KEY:
-            if self.state == 'Ancient Quest':
-                self.cursor_rect.midtop = (self.g2x + -105, self.g2y)
-                self.state = 'Platformer'
-            elif self.state == 'Platformer':
-                self.cursor_rect.midtop = (self.g3x + -125, self.g3y)
-                self.state = 'Shark Attack'
-            elif self.state == 'Shark Attack':
-                self.cursor_rect.midtop = (self.g1x + -135, self.g1y)
-                self.state = 'Ancient Quest'
-        elif self.game.UP_KEY:
-            if self.state == 'Ancient Quest':
-                self.cursor_rect.midtop = (self.g3x + -125, self.g3y)
-                self.state = 'Shark Attack'
-            elif self.state == 'Platformer':
-                self.cursor_rect.midtop = (self.g1x + -135, self.g1y)
-                self.state = 'Ancient Quest'
-            elif self.state == 'Shark Attack':
-                self.cursor_rect.midtop = (self.g2x + -105, self.g2y)
-                self.state = 'Platformer'
-
-    def check_input(self):
-        self.move_cursor()
-        if self.game.BACK_KEY:
-            self.game.curr_menu = self.game.main_menu
-            self.run_display = False
-        if self.game.START_KEY:
-            if self.state == 'Ancient Quest':
-                self.draw_wip()
-            elif self.state == 'Platformer':
-                self.draw_wip()
-            elif self.state == 'Shark Attack':
-                shark_attack
-
-    def draw_characters(self):
-        sharkS = pygame.image.load('Games/SA/Characters/Shark.R.png')
-        platformerS = pygame.image.load('Games/P/Characters/Platformer.png')
-        adventurerS = pygame.image.load('Games/AQ/Characters/Adventurer.png')
-        if self.state == 'Ancient Quest':
-            self.game.display.blit(adventurerS, (self.mid_w - 85, self.mid_h - 230))
-        elif self.state == 'Shark Attack':
-            self.game.display.blit(sharkS, (self.mid_w - 85, self.mid_h - 230))
-        elif self.state == 'Platformer':
-            self.game.display.blit(platformerS, (self.mid_w - 85, self.mid_h - 230))
-
-    def draw_wip(self):
-        pygame.draw.rect(self.game.display, self.game.RED, self.rect)
-        self.game.draw_text('W.I.P', 30, self.mid_w, self.mid_h)
-        time.sleep(5)
-
 
 pygame.display.quit()
 pygame.quit()
