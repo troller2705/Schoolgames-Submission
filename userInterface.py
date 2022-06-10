@@ -371,7 +371,7 @@ class UserInterface:
         self.surface.blit(text_surface, text_rect)
 
     def promote_piece(self):
-        self.draw_text("Promote your piece", 18, 770, 18)
+        self.draw_text("Promote your pawn", 18, 770, 18)
         q = pygame.image.load("Assets/Chess_tile_ql.png")
         r = pygame.image.load("Assets/Chess_tile_rl.png")
         b = pygame.image.load("Assets/Chess_tile_bl.png")
@@ -386,3 +386,14 @@ class UserInterface:
         self.surface.blit(b, (759, 34))
         self.surface.blit(n, (834, 34))
         pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if q.get_rect().collidepoint(pos):
+                    pass
+                elif r.get_rect().collidepoint(pos):
+                    pass
+                elif b.get_rect().collidepoint(pos):
+                    pass
+                elif n.get_rect().collidepoint(pos):
+                    pass
