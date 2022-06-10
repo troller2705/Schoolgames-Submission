@@ -11,7 +11,6 @@ class Game:
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.ESC_KEY = False, False, False, False, False
         self.DISPLAY_W = pygame.display.get_desktop_sizes()[0][0]
         self.DISPLAY_H = pygame.display.get_desktop_sizes()[0][1]
-        self.canvas = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.display = pygame.display.set_mode((self.DISPLAY_W, self.DISPLAY_H), pygame.FULLSCREEN)
         Menu_icon = pygame.image.load('UI/icon.png')
         pygame.display.set_icon(Menu_icon)
@@ -31,8 +30,15 @@ class Game:
         pygame.mixer.music.play(-1)
         self.clock.tick(60)
 
+    def blit_screen(self):
+        self.display.blit(self.display, (0, 0))
+        pygame.display.update()
+        self.reset_keys()
+
     def check_events(self):
         for event in pygame.event.get():
+            """if event.type == pygame.VIDEORESIZE:
+                self.display = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)"""
             if event.type == pygame.QUIT:
                 self.running = False
                 self.curr_menu.run_display = False

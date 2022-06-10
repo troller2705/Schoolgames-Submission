@@ -1,7 +1,4 @@
-import sys
 import pygame
-
-from sonic import *
 
 class Menu:
     def __init__(self, game):
@@ -14,11 +11,6 @@ class Menu:
 
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
-
-    def blit_screen(self):
-        self.game.display.blit(self.game.display, (0, 0))
-        pygame.display.update()
-        self.game.reset_keys()
 
     def draw_cross(self):
         for y_offset in range(0, 100, 10):
@@ -54,7 +46,7 @@ class MainMenu(Menu):
             self.game.draw_text('Exit', 20, self.exitx, self.exity)
             self.draw_cross()
             self.draw_cursor()
-            self.blit_screen()
+            self.game.blit_screen()
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
@@ -88,8 +80,10 @@ class MainMenu(Menu):
         self.move_cursor()
         if self.game.START_KEY:
             if self.state == 'Start':
+                import chess
                 self.run_display = False
-
+                chess.Chess()
+                pygame.quit()
             elif self.state == 'Options':
                 self.game.curr_menu = self.game.options
             elif self.state == 'Credits':
@@ -119,7 +113,7 @@ class OptionsMenu(Menu):
             self.game.draw_text('Controls', 20, self.controlsx, self.controlsy)
             self.draw_cross()
             self.draw_cursor()
-            self.blit_screen()
+            self.game.blit_screen()
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
@@ -170,7 +164,7 @@ class VolumeMenu(Menu):
             self.game.draw_text(f'Sound:{self.game.mute2}', 20, self.controlsx, self.controlsy)
             self.draw_cross()
             self.draw_cursor()
-            self.blit_screen()
+            self.game.blit_screen()
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
@@ -224,7 +218,7 @@ class ControlsMenu(Menu):
             self.game.draw_text('Enter', 20, self.controlsx, self.controlsy)
             self.game.draw_text('Backspace', 20, self.videox, self.videoy)
             self.draw_cross()
-            self.blit_screen()
+            self.game.blit_screen()
 
     def check_input(self):
         if self.game.BACK_KEY:
@@ -249,7 +243,7 @@ class CreditsMenu(Menu):
             self.game.draw_text('Lead Developer, Graphics Designer, Sound Engineer:', 15, self.mid_w, self.mid_h + 25)
             self.game.draw_text('Troller AKA Cole', 25, self.mid_w, self.mid_h + 50)
 
-            self.blit_screen()
+            self.game.blit_screen()
 
 pygame.display.quit()
 pygame.quit()
