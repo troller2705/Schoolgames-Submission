@@ -4,13 +4,6 @@ from ratings import Ratings
 import time
 
 class UserInterface:
-    '''
-    User interface class contains all Graphical User Interface components
-    of program through pygame. This includes a function that Draws
-    all elements including the board and peices. Class takes pygame surface
-    and class of type board to be initialized with game
-
-    '''
     def __init__(self, surface, Board):
         self.DISPLAY_W = 600
         self.DISPLAY_H = 600
@@ -32,15 +25,13 @@ class UserInterface:
         self.computerMove = "" # Stores computers move they make
         self.playerColor = "" # Color of player
         self.computerColor = "" # Color of computer
+        self.status = "" # Status of game
+        self.turn = "" # Current turn
 
 
 
 
     def drawComponent(self):
-        '''
-        Draw component draws elements including the game board, chess chessPieces
-        and text cues and indications
-        '''
         # Creates visual representation of board by Making Checkered square pattern
         for i in range(0, self.peices, 2):
             pygame.draw.rect(self.surface, (120, 60, 30), [(i % 8+(i//8) % 2)*self.squareSize, (i//8)*self.squareSize, self.squareSize, self.squareSize])  # Draws brown squares
@@ -183,10 +174,6 @@ class UserInterface:
 
 
     def eventHandler(self):
-        '''
-        Function for handling mouse events and reacting to them such as
-        conducting moves
-        '''
         # Read pygame events
         for event in pygame.event.get():
             # If user hits exit
@@ -210,9 +197,6 @@ class UserInterface:
                     self.computeMove()  # Compute the move player has made
 
     def computeMove(self):
-        """
-        Computes move player makes onto the game board
-        """
         # We now have to translate the coordinates in a way the board will understand
         # If we have a pawn promotion
         rowInitial = self.mouseInitialY//self.squareSize
@@ -223,7 +207,7 @@ class UserInterface:
         # IF player is performing a promotion move
         if rowFinal == 0 and rowInitial == 1 and self.chessboard.boardArray[rowInitial][columnInitial] == "P":
             # Allow player to choose which peice to promote
-            promotionPeice = input("Promotion! Select promotion peice [Q,R,B,K]: ")
+            promotionPeice = self.promote_piece()
             # Send move to promote peice
             self.playerMove += str(columnInitial) + str(columnFinal) + str(self.chessboard.boardArray[rowFinal][columnFinal])+ promotionPeice + "P"
 
@@ -247,11 +231,13 @@ class UserInterface:
             self.drawComponent()  # Visually update board
             # It's now the computer's turn to make a move. Call computerMoves
             self.computerMoves()
-        else:
-            print("Move Invalid or Unsafe")
         # Set current move back to empty to generate next move
         self.playerMove = ""
         self.computerMove = ""
+
+        if self.chessboard.kingissafe():
+            self.status = ""
+            self.draw_status()
 
     def computerMoves(self):
         '''
@@ -259,16 +245,19 @@ class UserInterface:
         '''
         # Display that it is the computers turn
         if self.computerColor == "W":
-            print("White's Turn")
+            self.turn = "White's Turn"
+            self.draw_turn()
         else:
-            print("Black's Turn")
+            self.turn = "Black's Turn"
+            self.draw_turn()
 
         self.chessboard.changePerspective()  # change to the computer's perspective
         self.computerMove = self.chessboard.alphaBeta(self.chessboard.MAXDEPTH, float("inf"), -float("inf"), "", 0)
         # If computer cannot make a move
         # Player wins
         if self.computerMove is None:
-            print("CHECKMATE!")
+            self.status = "CHECKMATE!"
+            self.draw_status()
             time.sleep(15)
             self.inPlay = False
         # Otherwise compute move
@@ -282,31 +271,34 @@ class UserInterface:
         # If checkmate
         if len(self.chessboard.generateMoveList()) == 0:
             if self.chessboard.kingissafe() is False:
-                print("CHECKMATE!")
+                self.status = "CHECKMATE!"
+                self.draw_status()
                 time.sleep(15)  # 15 Second delay (usually to verify if checkmate is legitimate)
                 self.inPlay = False
             # Otherwise if stalemate
             else:
-                print("STALEMATE!")
+                self.status = "STALEMATE!"
+                self.draw_status()
                 time.sleep(15)  # 15 Second delay (usually to verify if checkmate is legitimate)
                 self.inPlay = False
 
         # Print check message if player is in check
         if self.chessboard.kingissafe() is False:
-            print("Check!")
+            self.status = "Check!"
+            self.draw_status()
+        else:
+            self.status = ""
+            self.draw_status()
 
         # Display that it is the players turn
         if self.playerColor == "W":
-            print("White's Turn")
+            self.turn = "White's Turn"
+            self.draw_turn()
         else:
-            print("Black's Turn")
-
+            self.turn = "Black's Turn"
+            self.draw_turn()
 
     def playGame(self):
-        '''
-        PlayGame function will run the gamn until he game ends, a reset is
-        performed, or user exits the program
-        '''
         self.surface.fill((0, 0, 0))  # initially Fill screen with black
         # Prompt user to select what colour they want to play as
         while(self.playerColor != "W" and self.playerColor != "B"):
@@ -315,7 +307,6 @@ class UserInterface:
         self.surface.fill((0, 0, 0))  # Fill screen with black
 
         self.drawComponent()  # Call drawComponent to initially draw the board
-        self.promote_piece()
 
         # Set computerColor based on color user selects
         if self.playerColor == "W":
@@ -325,16 +316,18 @@ class UserInterface:
 
         # If player is white, prompt player to go first
         if self.playerColor == "W":
-            print("White's Turn")
+            self.turn = "White's Turn"
 
         else:
             # Otherwise it is computers turn
-            print("White's Turn")
+            self.turn = "White's Turn"
             self.computerMoves() # Computer makes first move
-            print("Black's Turn")
+            self.turn = "Black's Turn"
         # Call the event handler until user chooses to exit game
         while self.inPlay:
             self.eventHandler()  # Call eventHandler for players input
+            self.draw_turn()
+
 
     def colorSelect(self):
         bx, by = self.DISPLAY_W / 3, self.DISPLAY_H / 2
@@ -387,13 +380,25 @@ class UserInterface:
         self.surface.blit(n, (834, 34))
         pygame.display.update()
 
+        pos = pygame.mouse.get_pos()
+
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if q.get_rect().collidepoint(pos):
-                    pass
+                    return "Q"
                 elif r.get_rect().collidepoint(pos):
-                    pass
+                    return "R"
                 elif b.get_rect().collidepoint(pos):
-                    pass
+                    return "B"
                 elif n.get_rect().collidepoint(pos):
-                    pass
+                    return "K"
+
+    def draw_turn(self):
+        pygame.draw.rect(self.surface, (0, 0, 0), [625, self.DISPLAY_H / 2 - 25, 600, 50])
+        self.draw_text(self.turn, 20, 870, self.DISPLAY_H / 2)
+        pygame.display.update()
+
+    def draw_status(self):
+        pygame.draw.rect(self.surface, (0, 0, 0), [625, self.DISPLAY_H / 2 + 60, 600, 100])
+        self.draw_text(self.status, 20, 870, self.DISPLAY_H / 2 + 80)
+        pygame.display.update()
