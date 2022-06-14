@@ -286,7 +286,9 @@ class UserInterface:
         if self.chessboard.kingissafe() is False:
             self.status = "Check!"
             self.draw_status()
-        else:
+
+
+        if self.chessboard.kingissafe():
             self.status = ""
             self.draw_status()
 
@@ -327,6 +329,9 @@ class UserInterface:
         while self.inPlay:
             self.eventHandler()  # Call eventHandler for players input
             self.draw_turn()
+            if self.chessboard.kingissafe():
+                self.status = ""
+                self.draw_status()
 
 
     def colorSelect(self):
