@@ -5,13 +5,34 @@ import time
 
 class UserInterface:
     def __init__(self, surface, Board):
-        self.DISPLAY_W = 600
-        self.DISPLAY_H = 600
         self.font_name = 'UI/8-Bit.ttf'
         self.surface = surface  # Holds the surface variable defined for pygame
         self.inPlay = True  # Inplay variable to check if we are still playing the game
-        self.squareSize = 75  # Size of square; used as a scale for peices and board squares (Re adjust this variable if you want to change size of game)
+        self.squareSize = 75 # Size of square; used as a scale for peices and board squares (Re adjust this variable if you want to change size of game)
         self.peices = 64
+
+        self.textSize = 20
+
+        if pygame.display.get_desktop_sizes()[0][0] >= 1900:
+            self.squareSize = 135
+            self.textSize = 35
+        elif pygame.display.get_desktop_sizes()[0][0] >= 1600:
+            self.squareSize = 115
+            self.textSize = 30
+        elif pygame.display.get_desktop_sizes()[0][0] >= 1300:
+            self.squareSize = 95
+            self.textSize = 25
+        elif pygame.display.get_desktop_sizes()[0][0] >= 1000:
+            self.squareSize = 75
+            self.textSize = 20
+        elif pygame.display.get_desktop_sizes()[0][0] >= 800:
+            self.squareSize = 55
+            self.textSize = 15
+
+        self.DISPLAY_W = self.squareSize * 8
+        self.DISPLAY_H = pygame.display.get_desktop_sizes()[0][1]
+
+
         # mouseInitial Stores the inital X and y coordinates user makes when clicking mouse on board
         self.mouseInitialX = 0
         self.mouseInitialY = 0
@@ -369,7 +390,7 @@ class UserInterface:
         self.surface.blit(text_surface, text_rect)
 
     def promote_piece(self):
-        self.draw_text("Promote your pawn", 18, 770, 18)
+        self.draw_text("Promote your pawn", self.textSize, self.DISPLAY_W + 170, 18)
         q = pygame.image.load("Assets/Chess_tile_ql.png")
         r = pygame.image.load("Assets/Chess_tile_rl.png")
         b = pygame.image.load("Assets/Chess_tile_bl.png")
@@ -379,10 +400,10 @@ class UserInterface:
         b = pygame.transform.scale(b, (75, 75))
         n = pygame.transform.scale(n, (75, 75))
 
-        self.surface.blit(q, (609, 34))
-        self.surface.blit(r, (684, 34))
-        self.surface.blit(b, (759, 34))
-        self.surface.blit(n, (834, 34))
+        self.surface.blit(q, (self.DISPLAY_W + 9, 34))
+        self.surface.blit(r, (self.DISPLAY_W + 84, 34))
+        self.surface.blit(b, (self.DISPLAY_W + 159, 34))
+        self.surface.blit(n, (self.DISPLAY_W + 234, 34))
         pygame.display.update()
 
         pos = pygame.mouse.get_pos()
@@ -399,11 +420,11 @@ class UserInterface:
                     return "K"
 
     def draw_turn(self):
-        pygame.draw.rect(self.surface, (0, 0, 0), [625, self.DISPLAY_H / 2 - 25, 600, 50])
-        self.draw_text(self.turn, 20, 870, self.DISPLAY_H / 2)
+        pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 25, self.DISPLAY_H / 2 - 25, 600, 50])
+        self.draw_text(self.turn, self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2)
         pygame.display.update()
 
     def draw_status(self):
-        pygame.draw.rect(self.surface, (0, 0, 0), [625, self.DISPLAY_H / 2 + 60, 600, 100])
-        self.draw_text(self.status, 20, 870, self.DISPLAY_H / 2 + 80)
+        pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 25, self.DISPLAY_H / 2 + 60, 600, 100])
+        self.draw_text(self.status, self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2 + 80)
         pygame.display.update()
