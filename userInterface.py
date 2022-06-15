@@ -199,9 +199,10 @@ class UserInterface:
         # Read pygame events
         for event in pygame.event.get():
             # If user hits exit
-            if event.type == pygame.QUIT:
-                self.inPlay = False  # Set exit variable to false and exit loop
-                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.inPlay = False  # Set exit variable to false and exit loop
+                    break
 
             # If we press the mouse down
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -326,7 +327,6 @@ class UserInterface:
         self.surface.fill((0, 0, 0))  # Fill screen with black
 
         self.drawComponent()  # Call drawComponent to initially draw the board
-        self.draw_forfeit()
 
         # Set computerColor based on color user selects
         if self.playerColor == "W":
@@ -347,6 +347,7 @@ class UserInterface:
         while self.inPlay:
             self.eventHandler()  # Call eventHandler for players input
             self.draw_turn()
+            self.draw_forfeit()
 
 
 
@@ -420,10 +421,11 @@ class UserInterface:
         pygame.display.update()
 
     def draw_status(self):
-        pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 25, self.DISPLAY_H / 2 + 60, 600, 100])
+        pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 25, self.DISPLAY_H / 2 + 60, 600, 75])
         self.draw_text(self.status, self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2 + 80)
         pygame.display.update()
 
     def draw_forfeit(self):
-        self.draw_text("Forfeit?", self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2 + 160)
+        f = pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 150, self.DISPLAY_H / 2 + 160 - self.textSize, 250 , 100])
+        self.draw_text("Forfeit (ESC)", self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2 + 160)
         pygame.display.update()
