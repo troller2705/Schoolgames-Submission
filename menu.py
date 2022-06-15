@@ -64,6 +64,7 @@ class MainMenu(Menu):
                 self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
                 self.state = 'Start'
         elif self.game.UP_KEY:
+            pygame.mixer.Sound.play(self.game.click)
             if self.state == 'Start':
                 self.cursor_rect.midtop = (self.exitx + -40, self.exity)
                 self.state = 'Exit'
@@ -118,6 +119,7 @@ class OptionsMenu(Menu):
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
+            pygame.mixer.Sound.play(self.game.click)
             if self.state == 'Volume':
                 self.cursor_rect.midtop = (self.controlsx + -80, self.controlsy)
                 self.state = 'Controls'
@@ -125,6 +127,7 @@ class OptionsMenu(Menu):
                 self.cursor_rect.midtop = (self.volx + -60, self.voly)
                 self.state = 'Volume'
         elif self.game.UP_KEY:
+            pygame.mixer.Sound.play(self.game.click)
             if self.state == 'Volume':
                 self.cursor_rect.midtop = (self.controlsx + -80, self.controlsy)
                 self.state = 'Controls'
@@ -169,6 +172,7 @@ class VolumeMenu(Menu):
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
+            pygame.mixer.Sound.play(self.game.click)
             if self.state == 'Music Mute':
                 self.cursor_rect.midtop = (self.controlsx + -90, self.controlsy)
                 self.state = 'Sound Mute'
@@ -176,6 +180,7 @@ class VolumeMenu(Menu):
                 self.cursor_rect.midtop = (self.volx + -90, self.voly)
                 self.state = 'Music Mute'
         elif self.game.UP_KEY:
+            pygame.mixer.Sound.play(self.game.click)
             if self.state == 'Music Mute':
                 self.cursor_rect.midtop = (self.controlsx + -90, self.controlsy)
                 self.state = 'Sound Mute'
