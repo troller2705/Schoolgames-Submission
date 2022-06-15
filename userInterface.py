@@ -252,15 +252,14 @@ class UserInterface:
         if self.playerMove in self.chessboard.generateMoveList():
             self.chessboard.computeMove(self.playerMove)  # Make the move on the board
             self.drawComponent()  # Visually update board
+            if self.chessboard.kingissafe() is not False:
+                self.status = ""
+                self.draw_status()
             # It's now the computer's turn to make a move. Call computerMoves
             self.computerMoves()
         # Set current move back to empty to generate next move
         self.playerMove = ""
         self.computerMove = ""
-
-        if self.chessboard.kingissafe():
-            self.status = ""
-            self.draw_status()
 
     def computerMoves(self):
         '''
@@ -310,11 +309,6 @@ class UserInterface:
             self.status = "Check!"
             self.draw_status()
 
-
-        if self.chessboard.kingissafe():
-            self.status = ""
-            self.draw_status()
-
         # Display that it is the players turn
         if self.playerColor == "W":
             self.turn = "White's Turn"
@@ -332,6 +326,7 @@ class UserInterface:
         self.surface.fill((0, 0, 0))  # Fill screen with black
 
         self.drawComponent()  # Call drawComponent to initially draw the board
+        self.draw_forfeit()
 
         # Set computerColor based on color user selects
         if self.playerColor == "W":
@@ -352,9 +347,7 @@ class UserInterface:
         while self.inPlay:
             self.eventHandler()  # Call eventHandler for players input
             self.draw_turn()
-            if self.chessboard.kingissafe():
-                self.status = ""
-                self.draw_status()
+
 
 
     def colorSelect(self):
@@ -429,4 +422,8 @@ class UserInterface:
     def draw_status(self):
         pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 25, self.DISPLAY_H / 2 + 60, 600, 100])
         self.draw_text(self.status, self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2 + 80)
+        pygame.display.update()
+
+    def draw_forfeit(self):
+        self.draw_text("Forfeit?", self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2 + 160)
         pygame.display.update()
