@@ -2,6 +2,7 @@ import pygame
 from peices import *
 from ratings import Ratings
 import time
+import sys
 
 class UserInterface:
     def __init__(self, surface, Board):
@@ -201,7 +202,8 @@ class UserInterface:
             # If user hits exit
             if event.type == pygame.QUIT:
                 self.inPlay = False  # Set exit variable to false and exit loop
-                break
+                pygame.quit()  # Exit pygame
+                sys.exit()  # Exit program
 
             # If we press the mouse down
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -252,15 +254,14 @@ class UserInterface:
         if self.playerMove in self.chessboard.generateMoveList():
             self.chessboard.computeMove(self.playerMove)  # Make the move on the board
             self.drawComponent()  # Visually update board
+            if self.chessboard.kingissafe() is not False:
+                self.status = ""
+                self.draw_status()
             # It's now the computer's turn to make a move. Call computerMoves
             self.computerMoves()
         # Set current move back to empty to generate next move
         self.playerMove = ""
         self.computerMove = ""
-
-        if self.chessboard.kingissafe():
-            self.status = ""
-            self.draw_status()
 
     def computerMoves(self):
         '''
@@ -310,11 +311,6 @@ class UserInterface:
             self.status = "Check!"
             self.draw_status()
 
-
-        if self.chessboard.kingissafe():
-            self.status = ""
-            self.draw_status()
-
         # Display that it is the players turn
         if self.playerColor == "W":
             self.turn = "White's Turn"
@@ -332,7 +328,10 @@ class UserInterface:
         self.surface.fill((0, 0, 0))  # Fill screen with black
 
         self.drawComponent()  # Call drawComponent to initially draw the board
+        self.draw_forfit()  # Call draw_forfit to draw the forfit text
 
+        if self.draw_forfit().rect.collidepoint(pygame.mouse.get_pos()):
+            pygame.quit()
         # Set computerColor based on color user selects
         if self.playerColor == "W":
             self.computerColor = "B"
@@ -352,9 +351,6 @@ class UserInterface:
         while self.inPlay:
             self.eventHandler()  # Call eventHandler for players input
             self.draw_turn()
-            if self.chessboard.kingissafe():
-                self.status = ""
-                self.draw_status()
 
 
     def colorSelect(self):
@@ -392,7 +388,7 @@ class UserInterface:
         self.surface.blit(text_surface, text_rect)
 
     def promote_piece(self):
-        self.draw_text("Promote your pawn", self.textSize, self.DISPLAY_W + 170, 18)
+        self.draw_text("Promote your pawn", self.textSize, self.DISPLAY_W + 200, 18)
         q = pygame.image.load("Assets/Chess_tile_ql.png")
         r = pygame.image.load("Assets/Chess_tile_rl.png")
         b = pygame.image.load("Assets/Chess_tile_bl.png")
@@ -402,10 +398,10 @@ class UserInterface:
         b = pygame.transform.scale(b, (75, 75))
         n = pygame.transform.scale(n, (75, 75))
 
-        self.surface.blit(q, (self.DISPLAY_W + 9, 34))
-        self.surface.blit(r, (self.DISPLAY_W + 84, 34))
-        self.surface.blit(b, (self.DISPLAY_W + 159, 34))
-        self.surface.blit(n, (self.DISPLAY_W + 234, 34))
+        self.surface.blit(q, (self.DISPLAY_W + 20, 34))
+        self.surface.blit(r, (self.DISPLAY_W + 95, 34))
+        self.surface.blit(b, (self.DISPLAY_W + 170, 34))
+        self.surface.blit(n, (self.DISPLAY_W + 245, 34))
         pygame.display.update()
 
         pos = pygame.mouse.get_pos()
@@ -427,6 +423,11 @@ class UserInterface:
         pygame.display.update()
 
     def draw_status(self):
-        pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 25, self.DISPLAY_H / 2 + 60, 600, 100])
+        pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 25, self.DISPLAY_H / 2 + 60, 600, 75])
         self.draw_text(self.status, self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2 + 80)
+        pygame.display.update()
+
+    def draw_forfit(self):
+        rect = pygame.draw.rect(self.surface, (0, 0, 0), [self.DISPLAY_W + 25, self.DISPLAY_H / 2 + 120, 600, 75])
+        self.draw_text("Forfit?", self.textSize, self.DISPLAY_W + 270, self.DISPLAY_H / 2 + 160)
         pygame.display.update()
