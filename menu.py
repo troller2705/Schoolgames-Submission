@@ -50,6 +50,7 @@ class MainMenu(Menu):
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
+            pygame.mixer.Sound.play(self.game.click)
             if self.state == 'Start':
                 self.cursor_rect.midtop = (self.optionsx + -70, self.optionsy)
                 self.state = 'Options'

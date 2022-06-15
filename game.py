@@ -28,6 +28,8 @@ class Game:
         self.mute2 = 'On'
         pygame.mixer.music.load('Music&Sounds/Menu/8_Bit_Menu.mp3')
         pygame.mixer.music.play(-1)
+
+        self.click = pygame.mixer.Sound('Music&Sounds/Menu/Cursor.wav')
         self.clock.tick(60)
 
     def blit_screen(self):
