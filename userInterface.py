@@ -6,6 +6,7 @@ import time
 class UserInterface:
     def __init__(self, surface, Board):
         self.font_name = 'UI/8-Bit.ttf'
+        self.click = pygame.mixer.Sound('Music&Sounds/Sounds/Bomb_Drop.wav')
         self.surface = surface  # Holds the surface variable defined for pygame
         self.inPlay = True  # Inplay variable to check if we are still playing the game
         self.squareSize = 75 # Size of square; used as a scale for peices and board squares (Re adjust this variable if you want to change size of game)
@@ -204,6 +205,7 @@ class UserInterface:
 
             # If we press the mouse down
             if event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.mixer.Sound.play(self.click)  # Play click sound
                 # If we are currently inside the board
                 if pygame.mouse.get_pos()[0] < 8*self.squareSize and pygame.mouse.get_pos()[1] < 8*self.squareSize:
                     self.mouseInitialX = pygame.mouse.get_pos()[0]  # Store clicked x position to mouseInitialX
