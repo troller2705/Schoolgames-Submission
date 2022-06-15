@@ -39,8 +39,6 @@ class Game:
 
     def check_events(self):
         for event in pygame.event.get():
-            """if event.type == pygame.VIDEORESIZE:
-                self.display = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)"""
             if event.type == pygame.QUIT:
                 self.running = False
                 self.curr_menu.run_display = False
