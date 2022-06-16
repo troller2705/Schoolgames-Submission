@@ -6,11 +6,7 @@ class Menu:
         self.x, self.y = self.game.display.get_size()
         self.mid_w, self.mid_h = self.x / 2, self.y / 2
         self.run_display = True
-        self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = -100
-
-    def draw_cursor(self):
-        self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
 
     def draw_cross(self):
         for y_offset in range(0, 100, 10):
@@ -30,7 +26,10 @@ class MainMenu(Menu):
         self.optionsx, self.optionsy = self.mid_w, self.mid_h + 225
         self.creditsx, self.creditsy = self.mid_w, self.mid_h + 250
         self.exitx, self.exity = self.mid_w, self.mid_h + 275
-        self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
+        self.prect = pygame.Rect(self.startx - 25, self.starty - 5, 100, 10)
+        self.orect = pygame.Rect(self.optionsx - 25, self.optionsy - 5, 100, 10)
+        self.crect = pygame.Rect(self.creditsx - 25, self.creditsy - 5, 100, 10)
+        self.erect = pygame.Rect(self.exitx - 25, self.exity - 5, 100, 10)
 
     def display_menu(self):
         self.run_display = True
@@ -45,52 +44,20 @@ class MainMenu(Menu):
             self.game.draw_text('Credits', 20, self.creditsx, self.creditsy)
             self.game.draw_text('Exit', 20, self.exitx, self.exity)
             self.draw_cross()
-            self.draw_cursor()
             self.game.blit_screen()
 
-    def move_cursor(self):
-        if self.game.DOWN_KEY:
-            pygame.mixer.Sound.play(self.game.click)
-            if self.state == 'Start':
-                self.cursor_rect.midtop = (self.optionsx + -70, self.optionsy)
-                self.state = 'Options'
-            elif self.state == 'Options':
-                self.cursor_rect.midtop = (self.creditsx + -70, self.creditsy)
-                self.state = 'Credits'
-            elif self.state == 'Credits':
-                self.cursor_rect.midtop = (self.exitx + -40, self.exity)
-                self.state = 'Exit'
-            elif self.state == 'Exit':
-                self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
-                self.state = 'Start'
-        elif self.game.UP_KEY:
-            pygame.mixer.Sound.play(self.game.click)
-            if self.state == 'Start':
-                self.cursor_rect.midtop = (self.exitx + -40, self.exity)
-                self.state = 'Exit'
-            elif self.state == 'Options':
-                self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
-                self.state = 'Start'
-            elif self.state == 'Credits':
-                self.cursor_rect.midtop = (self.optionsx + -70, self.optionsy)
-                self.state = 'Options'
-            elif self.state == 'Exit':
-                self.cursor_rect.midtop = (self.creditsx + -70, self.creditsy)
-                self.state = 'Credits'
-
     def check_input(self):
-        self.move_cursor()
-        if self.game.START_KEY:
-            if self.state == 'Start':
+        self.pos = pygame.mouse.get_pos()
+        if self.game.click:
+            if self.prect.collidepoint(self.pos):
                 import chess
                 self.run_display = False
                 chess.Chess()
-                pygame.quit()
-            elif self.state == 'Options':
+            elif self.orect.collidepoint(self.pos):
                 self.game.curr_menu = self.game.options
-            elif self.state == 'Credits':
+            elif self.crect.collidepoint(self.pos):
                 self.game.curr_menu = self.game.credits
-            elif self.state == 'Exit':
+            elif self.erect.collidepoint(self.pos):
                 pygame.quit()
 
             self.run_display = False
@@ -102,7 +69,10 @@ class OptionsMenu(Menu):
         self.state = 'Volume'
         self.volx, self.voly = self.mid_w, self.mid_h + 200
         self.controlsx, self.controlsy = self.mid_w, self.mid_h + 225
-        self.cursor_rect.midtop = (self.volx + -60, self.voly)
+        self.backx, self.backy = self.mid_w, self.mid_h + 250
+        self.vrect = pygame.Rect(self.volx - 25, self.voly - 5, 100, 10)
+        self.crect = pygame.Rect(self.controlsx - 25, self.controlsy - 5, 100, 10)
+        self.brect = pygame.Rect(self.backx - 25, self.backy - 5, 100, 10)
 
     def display_menu(self):
         self.run_display = True
@@ -113,38 +83,20 @@ class OptionsMenu(Menu):
             self.game.draw_text('Options', 30, self.mid_w, self.mid_h - 200)
             self.game.draw_text('Volume', 20, self.volx, self.voly)
             self.game.draw_text('Controls', 20, self.controlsx, self.controlsy)
+            self.game.draw_text('Back', 20, self.backx, self.backy)
             self.draw_cross()
-            self.draw_cursor()
             self.game.blit_screen()
 
-    def move_cursor(self):
-        if self.game.DOWN_KEY:
-            pygame.mixer.Sound.play(self.game.click)
-            if self.state == 'Volume':
-                self.cursor_rect.midtop = (self.controlsx + -80, self.controlsy)
-                self.state = 'Controls'
-            elif self.state == 'Controls':
-                self.cursor_rect.midtop = (self.volx + -60, self.voly)
-                self.state = 'Volume'
-        elif self.game.UP_KEY:
-            pygame.mixer.Sound.play(self.game.click)
-            if self.state == 'Volume':
-                self.cursor_rect.midtop = (self.controlsx + -80, self.controlsy)
-                self.state = 'Controls'
-            elif self.state == 'Controls':
-                self.cursor_rect.midtop = (self.volx + -60, self.voly)
-                self.state = 'Volume'
-
     def check_input(self):
-        self.move_cursor()
-        if self.game.BACK_KEY:
-            self.game.curr_menu = self.game.main_menu
-            self.run_display = False
-        if self.game.START_KEY:
-            if self.state == 'Volume':
+        self.pos = pygame.mouse.get_pos()
+        if self.game.click:
+            if self.vrect.collidepoint(self.pos):
                 self.game.curr_menu = self.game.volume_menu
-            elif self.state == 'Controls':
+            elif self.crect.collidepoint(self.pos):
                 self.game.curr_menu = self.game.controls_menu
+            elif self.brect.collidepoint(self.pos):
+                self.game.curr_menu = self.game.main_menu
+                self.run_display = False
 
             self.run_display = False
 
@@ -152,10 +104,12 @@ class OptionsMenu(Menu):
 class VolumeMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
-        self.state = 'Music Mute'
         self.volx, self.voly = self.mid_w, self.mid_h + 225
         self.controlsx, self.controlsy = self.mid_w, self.mid_h + 250
-        self.cursor_rect.midtop = (self.volx + -85, self.voly)
+        self.backx, self.backy = self.mid_w, self.mid_h + 275
+        self.mrect = pygame.Rect(self.volx - 25, self.voly - 5, 100, 10)
+        self.srect = pygame.Rect(self.controlsx - 25, self.controlsy - 5, 100, 10)
+        self.brect = pygame.Rect(self.backx - 25, self.backy - 5, 100, 10)
 
     def display_menu(self):
         self.run_display = True
@@ -166,52 +120,32 @@ class VolumeMenu(Menu):
             self.game.draw_text('Volume', 30, self.mid_w, self.mid_h - 200)
             self.game.draw_text(f'Music:{self.game.mute1}', 20, self.volx, self.voly)
             self.game.draw_text(f'Sound:{self.game.mute2}', 20, self.controlsx, self.controlsy)
+            self.game.draw_text('Back', 20, self.backx, self.backy)
             self.draw_cross()
-            self.draw_cursor()
             self.game.blit_screen()
 
-    def move_cursor(self):
-        if self.game.DOWN_KEY:
-            pygame.mixer.Sound.play(self.game.click)
-            if self.state == 'Music Mute':
-                self.cursor_rect.midtop = (self.controlsx + -90, self.controlsy)
-                self.state = 'Sound Mute'
-            elif self.state == 'Sound Mute':
-                self.cursor_rect.midtop = (self.volx + -90, self.voly)
-                self.state = 'Music Mute'
-        elif self.game.UP_KEY:
-            pygame.mixer.Sound.play(self.game.click)
-            if self.state == 'Music Mute':
-                self.cursor_rect.midtop = (self.controlsx + -90, self.controlsy)
-                self.state = 'Sound Mute'
-            elif self.state == 'Sound Mute':
-                self.cursor_rect.midtop = (self.volx + -90, self.voly)
-                self.state = 'Music Mute'
-
     def check_input(self):
-        self.move_cursor()
-        if self.game.BACK_KEY:
-            self.game.curr_menu = self.game.options
-            self.run_display = False
-        if self.game.START_KEY:
-            if self.state == 'Music Mute' and self.game.mute1 == 'Off':
+        self.pos = pygame.mouse.get_pos()
+        if self.game.click:
+            if self.mrect.collidepoint(self.pos) and self.game.mute1 == 'Off':
                 pygame.mixer.music.unpause()
                 self.game.mute1 = 'On'
-            elif self.state == 'Music Mute' and self.game.mute1 == 'On':
+            elif self.mrect.collidepoint(self.pos) and self.game.mute1 == 'On':
                 pygame.mixer.music.pause()
                 self.game.mute1 = 'Off'
-            elif self.state == 'Sound Mute' and self.game.mute2 == 'Off':
+            elif self.srect.collidepoint(self.pos) and self.game.mute2 == 'Off':
                 self.game.mute2 = 'On'
-            elif self.state == 'Sound Mute' and self.game.mute2 == 'On':
+            elif self.srect.collidepoint(self.pos) and self.game.mute2 == 'On':
                 self.game.mute2 = 'Off'
+            elif self.brect.collidepoint(self.pos):
+                self.game.curr_menu = self.game.options
+                self.run_display = False
 
 
 class ControlsMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.volx, self.voly = self.mid_w, self.mid_h + 200
-        self.controlsx, self.controlsy = self.mid_w, self.mid_h + 225
-        self.videox, self.videoy = self.mid_w, self.mid_h + 250
 
     def display_menu(self):
         self.run_display = True
@@ -220,14 +154,12 @@ class ControlsMenu(Menu):
             self.check_input()
             self.game.display.fill((0, 0, 0))
             self.game.draw_text('Controls', 30, self.mid_w, self.mid_h - 200)
-            self.game.draw_text('Arrow Keys', 20, self.volx, self.voly)
-            self.game.draw_text('Enter', 20, self.controlsx, self.controlsy)
-            self.game.draw_text('Backspace', 20, self.videox, self.videoy)
+            self.game.draw_text('Mouse', 20, self.volx, self.voly)
             self.draw_cross()
             self.game.blit_screen()
 
     def check_input(self):
-        if self.game.BACK_KEY:
+        if self.game.click:
             self.game.curr_menu = self.game.options
             self.run_display = False
 
@@ -240,7 +172,7 @@ class CreditsMenu(Menu):
         self.run_display = True
         while self.run_display:
             self.game.check_events()
-            if self.game.START_KEY or self.game.BACK_KEY:
+            if self.game.click:
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
             self.game.display.fill(self.game.BLACK)

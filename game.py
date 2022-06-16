@@ -8,7 +8,7 @@ class Game:
         pygame.init()
         pygame.mixer.init()
         self.running = True
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.ESC_KEY = False, False, False, False, False
+        self.click = False
         self.DISPLAY_W = pygame.display.get_desktop_sizes()[0][0]
         self.DISPLAY_H = pygame.display.get_desktop_sizes()[0][1]
         self.display = pygame.display.set_mode((self.DISPLAY_W, self.DISPLAY_H), pygame.FULLSCREEN)
@@ -39,25 +39,14 @@ class Game:
 
     def check_events(self):
         for event in pygame.event.get():
-            """if event.type == pygame.VIDEORESIZE:
-                self.display = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)"""
             if event.type == pygame.QUIT:
                 self.running = False
                 self.curr_menu.run_display = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    self.START_KEY = True
-                if event.key == pygame.K_BACKSPACE:
-                    self.BACK_KEY = True
-                if event.key == pygame.K_DOWN:
-                    self.DOWN_KEY = True
-                if event.key == pygame.K_UP:
-                    self.UP_KEY = True
-                if event.key == pygame.K_ESCAPE:
-                    self.ESC_KEY = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.click = True
 
     def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.click = False
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
