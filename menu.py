@@ -1,5 +1,6 @@
 import pygame
 
+
 class Menu:
     def __init__(self, game):
         self.game = game
@@ -182,6 +183,7 @@ class CreditsMenu(Menu):
             self.game.draw_text('Troller AKA Cole', 25, self.mid_w, self.mid_h + 50)
 
             self.game.blit_screen()
+
 
 pygame.display.quit()
 pygame.quit()

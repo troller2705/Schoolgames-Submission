@@ -1,7 +1,8 @@
 import pygame
+import time
+
 from peices import *
 from ratings import Ratings
-import time
 
 
 class UserInterface:

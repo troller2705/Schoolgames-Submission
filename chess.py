@@ -1,4 +1,5 @@
 import pygame
+
 from board import ChessBoard
 from userInterface import UserInterface
 
